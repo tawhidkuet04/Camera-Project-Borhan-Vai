@@ -32,13 +32,15 @@
  NO determines rotation'll not happened for this ViewController.
  */
 
--(BOOL)shouldAutorotate{
-    return NO;
-}
 
 - (void)viewDidLoad {
     [super viewDidLoad];
     
+    // you can't put it in the front using:
+    //    [delegate.window insertSubview:nonRotatingView aboveSubview:self.view];
+    // It will show up the same as before
+    
+    // you should declare nonRotatingView as a property so you can easily access it for removal, etc.
     [[UIDevice currentDevice] beginGeneratingDeviceOrientationNotifications];
     [[NSNotificationCenter defaultCenter] addObserver:self
                                              selector:@selector(orientationChanged:)
@@ -121,10 +123,57 @@
         
     }];
 }
+- (UIImageOrientation)currentImageOrientation
+{
+    UIDeviceOrientation deviceOrientation = [[UIDevice currentDevice] orientation];
+    UIImageOrientation imageOrientation;
+    
+    AVCaptureDeviceInput *input = captureSession.inputs.firstObject;
+    if (input.device.position == AVCaptureDevicePositionBack) {
+        switch (deviceOrientation) {
+            case UIDeviceOrientationLandscapeLeft:
+                imageOrientation = UIImageOrientationUp;
+                break;
+                
+            case UIDeviceOrientationLandscapeRight:
+                imageOrientation = UIImageOrientationDown;
+                break;
+                
+            case UIDeviceOrientationPortraitUpsideDown:
+                imageOrientation = UIImageOrientationLeft;
+                break;
+                
+            default:
+                imageOrientation = UIImageOrientationRight;
+                break;
+        }
+    } else {
+        switch (deviceOrientation) {
+            case UIDeviceOrientationLandscapeLeft:
+                imageOrientation = UIImageOrientationDownMirrored;
+                break;
+                
+            case UIDeviceOrientationLandscapeRight:
+                imageOrientation = UIImageOrientationUpMirrored;
+                break;
+                
+            case UIDeviceOrientationPortraitUpsideDown:
+                imageOrientation = UIImageOrientationRightMirrored;
+                break;
+                
+            default:
+                imageOrientation = UIImageOrientationLeftMirrored;
+                break;
+        }
+    }
+    
+    return imageOrientation;
+}
+#pragma mark - Camera Action
 - (IBAction)cameraButtonPressed:(id)sender {
     
     AVCapturePhotoSettings *settings = [[AVCapturePhotoSettings alloc]init];
-    settings.flashMode =  AVCaptureFlashModeAuto ;
+   // settings.flashMode =  AVCaptureFlashModeAuto ;
     [Output capturePhotoWithSettings:settings delegate:self];
     
     NSLog(@"Pressed");
@@ -175,6 +224,7 @@
         videoDeviceInput = [AVCaptureDeviceInput deviceInputWithDevice:newVideoDevice error:NULL];
         [captureSession addInput:videoDeviceInput];
         
+        
     }
 }
 
@@ -195,7 +245,7 @@
         
         UIImage *image = [UIImage imageWithCGImage:[[[UIImage alloc] initWithData:data] CGImage]
                                              scale:1.0f
-                                       orientation:UIImageOrientationRight];
+                                       orientation:[self currentImageOrientation]];
         
         imageShowViewController *imageController = [[ imageShowViewController alloc]init];
         imageController.imageToSend = image;
@@ -208,9 +258,7 @@
 
 @implementation UINavigationController (CustomCon)
 
-- (BOOL)shouldAutorotate{
-    return NO;
-}
+
 
 @end
 
