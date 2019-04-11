@@ -11,6 +11,7 @@
 #define CAPTURE_FRAMES_PER_SECOND        20
 @interface ViewController : UIViewController{
     UIImageOrientation imageOrientation;
+    int  cameraOrVideoSelection;
     
 }
 - (UIImageOrientation)currentImageOrientation;
