@@ -39,6 +39,7 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+
     // initially camera selected which value is 2
     
     cameraOrVideoSelection = 2 ;
@@ -183,6 +184,8 @@
     
     return imageOrientation;
 }
+
+
 #pragma mark - Camera Action Methods
 - (IBAction)cameraButtonPressed:(id)sender {
     NSLog(@"------ %d",cameraOrVideoSelection);
@@ -194,8 +197,30 @@
         
         NSLog(@"Pressed");
     }else {
+        ////// Stopwatch Initialize
+        [stopTimer invalidate];
+        lbl.text = @"00.00.00.000";
+        running = FALSE;
+        startDate = [NSDate date];
+        stopTimer = nil;
+         //////////////////
+        
+        
         if(!isRecording){
+            ///////////////
+           ///// Stopwatch start
+            running = TRUE;
+            [sender setTitle:@"Stop" forState:UIControlStateNormal];
+            if (stopTimer == nil) {
+                stopTimer = [NSTimer scheduledTimerWithTimeInterval:1.0/10.0
+                                                             target:self
+                                                           selector:@selector(updateTimer)
+                                                           userInfo:nil
+                                                            repeats:YES];
+            }
             isRecording = YES ;
+            
+            ///////////////
             NSLog(@"hhh");
             NSString *outputPath= [[NSString alloc] initWithFormat:@"%@%@",NSTemporaryDirectory(),@"output.mov"];
             NSURL *outputURL = [[NSURL alloc] initFileURLWithPath:outputPath];
@@ -213,6 +238,13 @@
             
             NSLog(@"aise nai");
         }else{
+            ///// Stopwatch clear
+            lbl.text = @"";
+            running = FALSE;
+            [sender setTitle:@"Start" forState:UIControlStateNormal];
+            [stopTimer invalidate];
+            stopTimer = nil;
+            ///////////////////
             isRecording = NO;
             [MovieFileOutput stopRecording];
         }
@@ -227,6 +259,7 @@
         if (s.selectedSegmentIndex == 1)
         {   // video
             // Add movie file output
+          
             MovieFileOutput= [[AVCaptureMovieFileOutput alloc]init];
             Float64 TotalSeconds = 60 ;
             int32_t preferredTimeScale = 30 ;
@@ -381,6 +414,17 @@ didFinishRecordingToOutputFileAtURL:(NSURL *)outputFileURL
        // [library release];
         
     }
+}
+#pragma  mark - Stopwatch Update funciton
+-(void)updateTimer{
+    NSDate *currentDate = [NSDate date];
+    NSTimeInterval timeInterval = [currentDate timeIntervalSinceDate:startDate];
+    NSDate *timerDate = [NSDate dateWithTimeIntervalSince1970:timeInterval];
+    NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
+    [dateFormatter setDateFormat:@"HH:mm:ss.SSS"];
+    [dateFormatter setTimeZone:[NSTimeZone timeZoneForSecondsFromGMT:0.0]];
+    NSString *timeString=[dateFormatter stringFromDate:timerDate];
+    lbl.text = timeString;
 }
 
 @end

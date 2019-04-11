@@ -24,9 +24,22 @@
                             </view>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="P4r-3H-z1O">
                                 <rect key="frame" x="0.0" y="0.0" width="414" height="736"/>
+                                <subviews>
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" minimumScaleFactor="0.5" adjustsFontForContentSizeCategory="YES" translatesAutoresizingMaskIntoConstraints="NO" id="6cX-wU-K2I">
+                                        <rect key="frame" x="124.33333333333333" y="50.000000000000007" width="165.33333333333337" height="84.666666666666686"/>
+                                        <constraints>
+                                            <constraint firstAttribute="width" secondItem="6cX-wU-K2I" secondAttribute="height" multiplier="41:21" id="5uL-Kc-0gV"/>
+                                        </constraints>
+                                        <fontDescription key="fontDescription" type="system" weight="semibold" pointSize="18"/>
+                                        <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                        <nil key="highlightedColor"/>
+                                    </label>
+                                </subviews>
                                 <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="736" id="4jK-Hd-Pxe"/>
+                                    <constraint firstItem="6cX-wU-K2I" firstAttribute="centerX" secondItem="P4r-3H-z1O" secondAttribute="centerX" id="W1A-BW-rSh"/>
+                                    <constraint firstItem="6cX-wU-K2I" firstAttribute="top" secondItem="P4r-3H-z1O" secondAttribute="top" constant="50" id="hhx-2q-Ed0"/>
                                 </constraints>
                             </view>
                             <segmentedControl opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="top" segmentControlStyle="plain" selectedSegmentIndex="0" translatesAutoresizingMaskIntoConstraints="NO" id="zpC-FQ-SnL" userLabel="Camera, Video">
@@ -77,6 +90,7 @@
                             <constraint firstItem="bdm-vI-veL" firstAttribute="centerY" secondItem="ENp-Gm-bfL" secondAttribute="centerY" id="R5Z-KC-YIH"/>
                             <constraint firstAttribute="bottom" secondItem="P4r-3H-z1O" secondAttribute="bottom" id="SUs-bI-vg5"/>
                             <constraint firstItem="ENp-Gm-bfL" firstAttribute="centerX" secondItem="8bC-Xf-vdC" secondAttribute="centerX" id="VBq-2f-W7B"/>
+                            <constraint firstItem="6cX-wU-K2I" firstAttribute="width" secondItem="8bC-Xf-vdC" secondAttribute="width" multiplier="0.4" id="b5o-QA-OgL"/>
                             <constraint firstItem="P4r-3H-z1O" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" id="do0-a6-Xt6"/>
                             <constraint firstItem="bdm-vI-veL" firstAttribute="trailing" secondItem="6Tk-OE-BBY" secondAttribute="trailing" id="eNe-tI-8UL"/>
                             <constraint firstItem="6Tk-OE-BBY" firstAttribute="trailing" secondItem="P4r-3H-z1O" secondAttribute="trailing" id="mhC-1f-5K0"/>
@@ -89,6 +103,7 @@
                     <navigationItem key="navigationItem" id="Chd-ez-TRs"/>
                     <connections>
                         <outlet property="cameraView" destination="P4r-3H-z1O" id="wVs-gQ-JpH"/>
+                        <outlet property="lbl" destination="6cX-wU-K2I" id="5xL-ps-DSA"/>
                         <outlet property="swipeCamera" destination="BOR-nj-aSG" id="M14-at-lrw"/>
                     </connections>
                 </viewController>

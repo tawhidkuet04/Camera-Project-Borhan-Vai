@@ -13,8 +13,14 @@
     UIImageOrientation imageOrientation;
     AVPlayer *player;
     int  cameraOrVideoSelection;
+    IBOutlet UILabel *lbl;
+    NSTimer *stopTimer;
+    NSDate *startDate;
+    BOOL running;
     
 }
+
+-(void)updateTimer;
 - (UIImageOrientation)currentImageOrientation;
 @end
 
