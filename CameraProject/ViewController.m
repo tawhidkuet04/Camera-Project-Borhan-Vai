@@ -9,6 +9,8 @@
 #import "ViewController.h"
 #import "imageShowViewController.h"
 #import <AssetsLibrary/AssetsLibrary.h>
+#import <UIKit/UIKit.h>
+#import <AVKit/AVKit.h>
 @interface ViewController ()<AVCapturePhotoCaptureDelegate,AVCaptureFileOutputRecordingDelegate>{
     AVCaptureSession *captureSession;
     AVCaptureDeviceInput* videoDeviceInput;
@@ -208,6 +210,7 @@
             }
             //[outputPath release];
             [MovieFileOutput startRecordingToOutputFileURL:outputURL recordingDelegate:self];
+            
             NSLog(@"aise nai");
         }else{
             isRecording = NO;
@@ -364,7 +367,17 @@ didFinishRecordingToOutputFileAtURL:(NSURL *)outputFileURL
                  }
              }];
         }
+        // Play video in AvPlayer after succesfully saving the video
         
+        player = [AVPlayer playerWithURL:outputFileURL];
+        AVPlayerViewController *playerViewController = [AVPlayerViewController new];
+        [player pause];
+        [player play];
+        playerViewController.player = player;
+        [self presentViewController:playerViewController animated:YES completion:nil];
+       // [self.navigationController pushViewController:playerViewController animated:YES];
+     //   [self addChildViewController: playerViewController];
+       // [self.view addSubview: playerViewController.view];
        // [library release];
         
     }
