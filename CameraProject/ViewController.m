@@ -194,25 +194,23 @@
         AVCapturePhotoSettings *settings = [[AVCapturePhotoSettings alloc]init];
         // settings.flashMode =  AVCaptureFlashModeAuto ;
         [Output capturePhotoWithSettings:settings delegate:self];
-        
         NSLog(@"Pressed");
     }else {
         ////// Stopwatch Initialize
         [stopTimer invalidate];
-        lbl.text = @"00.00.00.000";
+        lbl.text = @"00.00.00";
         running = FALSE;
         startDate = [NSDate date];
         stopTimer = nil;
          //////////////////
-        
-        
+
         if(!isRecording){
             ///////////////
            ///// Stopwatch start
             running = TRUE;
             [sender setTitle:@"Stop" forState:UIControlStateNormal];
             if (stopTimer == nil) {
-                stopTimer = [NSTimer scheduledTimerWithTimeInterval:1.0/10.0
+                stopTimer = [NSTimer scheduledTimerWithTimeInterval:1.0/1.0
                                                              target:self
                                                            selector:@selector(updateTimer)
                                                            userInfo:nil
@@ -248,9 +246,6 @@
             isRecording = NO;
             [MovieFileOutput stopRecording];
         }
-        
-
-      
     }
 }
 - (IBAction)selectVideoOrCamera:(id)sender {
@@ -259,7 +254,6 @@
         if (s.selectedSegmentIndex == 1)
         {   // video
             // Add movie file output
-          
             MovieFileOutput= [[AVCaptureMovieFileOutput alloc]init];
             Float64 TotalSeconds = 60 ;
             int32_t preferredTimeScale = 30 ;
@@ -273,7 +267,6 @@
             if ([captureSession canAddOutput:MovieFileOutput]) {
                 [captureSession addOutput:MovieFileOutput];
             }
-            
         }
         else
         {
@@ -285,7 +278,6 @@
                 [captureSession addOutput:Output];
             }
 
-            
         }
     }
 
@@ -421,7 +413,7 @@ didFinishRecordingToOutputFileAtURL:(NSURL *)outputFileURL
     NSTimeInterval timeInterval = [currentDate timeIntervalSinceDate:startDate];
     NSDate *timerDate = [NSDate dateWithTimeIntervalSince1970:timeInterval];
     NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
-    [dateFormatter setDateFormat:@"HH:mm:ss.SSS"];
+    [dateFormatter setDateFormat:@"HH:mm:ss"];
     [dateFormatter setTimeZone:[NSTimeZone timeZoneForSecondsFromGMT:0.0]];
     NSString *timeString=[dateFormatter stringFromDate:timerDate];
     lbl.text = timeString;
