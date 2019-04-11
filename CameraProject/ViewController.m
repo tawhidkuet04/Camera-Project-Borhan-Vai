@@ -8,12 +8,14 @@
 
 #import "ViewController.h"
 #import "imageShowViewController.h"
-
-@interface ViewController ()<AVCapturePhotoCaptureDelegate>{
+#import <AssetsLibrary/AssetsLibrary.h>
+@interface ViewController ()<AVCapturePhotoCaptureDelegate,AVCaptureFileOutputRecordingDelegate>{
     AVCaptureSession *captureSession;
     AVCaptureDeviceInput* videoDeviceInput;
     AVCaptureVideoDataOutput* videoDataOutput;
     AVCapturePhotoOutput *Output ;
+    AVCaptureMovieFileOutput *MovieFileOutput;
+    BOOL isRecording;
 }
 @property (weak, nonatomic) IBOutlet UIView *cameraView;
 @property (weak, nonatomic) IBOutlet UIButton *swipeCamera;
@@ -66,7 +68,15 @@
     videoDeviceInput = cameraDeviceInput;
     AVCaptureDeviceInput *micDeviceInput = [[AVCaptureDeviceInput alloc] initWithDevice:[AVCaptureDevice defaultDeviceWithMediaType:AVMediaTypeAudio] error:nil];
     Output = [[AVCapturePhotoOutput alloc] init];
-    
+  
+    // Add movie file output
+    MovieFileOutput= [[AVCaptureMovieFileOutput alloc]init];
+    Float64 TotalSeconds = 60 ;
+    int32_t preferredTimeScale = 30 ;
+    CMTime maxDuration = CMTimeMakeWithSeconds(TotalSeconds, preferredTimeScale);    ///<SET MAX DURATION
+   
+    MovieFileOutput.maxRecordedDuration = maxDuration ;
+     MovieFileOutput.minFreeDiskSpaceLimit = 1024 * 1024;
     if ([captureSession canAddInput:cameraDeviceInput]) {
         [captureSession addInput:cameraDeviceInput];
     }
@@ -76,9 +86,10 @@
     if ([captureSession canAddOutput:Output]) {
         [captureSession addOutput:Output];
     }
-    
-    
-    
+    if ([captureSession canAddOutput:Output]) {
+        [captureSession addOutput:MovieFileOutput];
+    }
+
     [captureSession startRunning];
     
     _videoPreviewLayer = [AVCaptureVideoPreviewLayer layerWithSession:captureSession];
@@ -97,6 +108,7 @@
  Basically a NSNotification fired while any device rotation happend.
  */
 
+// Notify if the screen orientation is changed
 -(void)orientationChanged:(NSNotification *)notif {
     UIDeviceOrientation deviceOrientation = [[UIDevice currentDevice] orientation];
     
@@ -123,6 +135,9 @@
         
     }];
 }
+
+// Give the current orientation of the screen
+
 - (UIImageOrientation)currentImageOrientation
 {
     UIDeviceOrientation deviceOrientation = [[UIDevice currentDevice] orientation];
@@ -172,11 +187,34 @@
 #pragma mark - Camera Action
 - (IBAction)cameraButtonPressed:(id)sender {
     
-    AVCapturePhotoSettings *settings = [[AVCapturePhotoSettings alloc]init];
-   // settings.flashMode =  AVCaptureFlashModeAuto ;
-    [Output capturePhotoWithSettings:settings delegate:self];
+//    AVCapturePhotoSettings *settings = [[AVCapturePhotoSettings alloc]init];
+//   // settings.flashMode =  AVCaptureFlashModeAuto ;
+//    [Output capturePhotoWithSettings:settings delegate:self];
+//
+//    NSLog(@"Pressed");
+    if(!isRecording){
+        isRecording = YES ;
+        NSLog(@"hhh");
+        NSString *outputPath= [[NSString alloc] initWithFormat:@"%@%@",NSTemporaryDirectory(),@"output.mov"];
+        NSURL *outputURL = [[NSURL alloc] initFileURLWithPath:outputPath];
+        NSFileManager *fileManager = [NSFileManager defaultManager];
+         NSLog(@"sssss");
+        if([fileManager fileExistsAtPath:outputPath]){
+            NSError *error ;
+            NSLog(@"aise");
+            if([fileManager removeItemAtPath:outputPath error:&error] == NO ){
+                NSLog(@"error");
+            }
+        }
+            //[outputPath release];
+            [MovieFileOutput startRecordingToOutputFileURL:outputURL recordingDelegate:self];
+        NSLog(@"aise nai");
+    }else{
+        isRecording = NO;
+        [MovieFileOutput stopRecording];
+    }
     
-    NSLog(@"Pressed");
+    
 }
 
 - (IBAction)swipeCamera:(id)sender {
@@ -250,6 +288,45 @@
         imageShowViewController *imageController = [[ imageShowViewController alloc]init];
         imageController.imageToSend = image;
         [self.navigationController pushViewController:imageController animated:YES];
+        
+    }
+}
+- (void)captureOutput:(AVCaptureFileOutput *)captureOutput
+didFinishRecordingToOutputFileAtURL:(NSURL *)outputFileURL
+      fromConnections:(NSArray *)connections
+                error:(NSError *)error
+{
+    
+    NSLog(@"didFinishRecordingToOutputFileAtURL - enter");
+    
+    BOOL RecordedSuccessfully = YES;
+    if ([error code] != noErr)
+    {
+        // A problem occurred: Find out if the recording was successful.
+        id value = [[error userInfo] objectForKey:AVErrorRecordingSuccessfullyFinishedKey];
+        if (value)
+        {
+            RecordedSuccessfully = [value boolValue];
+        }
+    }
+    if (RecordedSuccessfully)
+    {
+        //----- RECORDED SUCESSFULLY -----
+        NSLog(@"didFinishRecordingToOutputFileAtURL - success");
+        ALAssetsLibrary *library = [[ALAssetsLibrary alloc] init];
+        if ([library videoAtPathIsCompatibleWithSavedPhotosAlbum:outputFileURL])
+        {
+            [library writeVideoAtPathToSavedPhotosAlbum:outputFileURL
+                                        completionBlock:^(NSURL *assetURL, NSError *error)
+             {
+                 if (error)
+                 {
+                     
+                 }
+             }];
+        }
+        
+       // [library release];
         
     }
 }

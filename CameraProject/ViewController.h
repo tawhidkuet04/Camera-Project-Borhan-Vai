@@ -8,7 +8,7 @@
 
 #import <UIKit/UIKit.h>
 #import <AVFoundation/AVFoundation.h>
-
+#define CAPTURE_FRAMES_PER_SECOND        20
 @interface ViewController : UIViewController{
     UIImageOrientation imageOrientation;
     
