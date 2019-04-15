@@ -15,6 +15,7 @@ NS_ASSUME_NONNULL_BEGIN
 @property (strong, nonatomic) IBOutlet PlayerBC *playerView;
 @property (nonatomic, strong) NSURL *videoURL;
  @property (strong, nonatomic) NSTimer *timer;
+- (void)updateSlider;
 @end
 
 NS_ASSUME_NONNULL_END

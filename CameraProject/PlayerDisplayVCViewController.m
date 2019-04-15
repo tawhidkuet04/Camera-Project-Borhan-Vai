@@ -12,6 +12,7 @@
     AVPlayer *player;
     IBOutlet UIButton *playPause;
     IBOutlet UISlider *slider;
+    __weak NSObject *weakSelf;
     AVPlayerItem *playerItem ;
    
 }
@@ -28,6 +29,10 @@
     slider.maximumValue = CMTimeGetSeconds(playerItem.asset.duration);
     slider.hidden =  NO;
     [slider setValue:0];
+    weakSelf = self;
+   // __weak NSObject *weakSelf = self;
+   
+
    // _playerView.player = player;
     [self.playerView setPlayer:player];
 
@@ -47,11 +52,30 @@
     if (player.rate) {
         [player pause];
         [btn setTitle:@"Play" forState:UIControlStateNormal];
-        [self.timer invalidate];
+       // [self.timer invalidate];
     }else{
-        [player play];
+       
         [btn setTitle:@"Pause" forState:UIControlStateNormal];
-        self.timer = [NSTimer scheduledTimerWithTimeInterval:0.1 target:self selector:@selector(updateSlider) userInfo:nil repeats:YES];
+        double interval = .1f;
+        
+        CMTime playerDuration = [self playerItemDuration]; // return player duration.
+        if (CMTIME_IS_INVALID(playerDuration))
+        {
+            return;
+        }
+        double duration = CMTimeGetSeconds(playerDuration);
+        if (isfinite(duration))
+        {
+            CGFloat width = CGRectGetWidth([slider bounds]);
+            interval = 0.5f * duration / width;
+        }
+        [player addPeriodicTimeObserverForInterval:CMTimeMakeWithSeconds(1/ 60.0, NSEC_PER_SEC)
+                                             queue:NULL
+                                        usingBlock:^(CMTime time){
+                                            [self updateSlider];
+                                        }];
+         [player play];
+      //  self.timer = [NSTimer scheduledTimerWithTimeInterval:0.1 target:self selector:@selector(updateSlider) userInfo:nil repeats:YES];
     }
 }
 - (void)itemDidFinishPlaying:(NSNotification *)notification {
@@ -73,8 +97,32 @@
    // [self presentViewController:cameraWindow  animated:YES completion:nil];
 }
 - (void)updateSlider {
-    CGFloat val = slider.value + 0.1f;
-    [slider setValue:val];
+    CMTime playerDuration = [self playerItemDuration];
+    if (CMTIME_IS_INVALID(playerDuration))
+    {
+        slider.minimumValue = 0.0;
+        return;
+    }
+    
+    double duration = CMTimeGetSeconds(playerDuration);
+    if (isfinite(duration) && (duration > 0))
+    {
+        float minValue = [ slider minimumValue];
+        float maxValue = [ slider maximumValue];
+        double time = CMTimeGetSeconds([player currentTime]);
+        [slider setValue:(maxValue - minValue) * time / duration + minValue];
+    }
+}
+- (CMTime)playerItemDuration
+{
+    AVPlayerItem *thePlayerItem = [player currentItem];
+    if (thePlayerItem.status == AVPlayerItemStatusReadyToPlay)
+    {
+        
+        return([playerItem duration]);
+    }
+    
+    return(kCMTimeInvalid);
 }/*
 #pragma mark - Navigation
 
