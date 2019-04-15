@@ -13,7 +13,7 @@
         <!--View Controller-->
         <scene sceneID="tne-QT-ifu">
             <objects>
-                <viewController id="BYZ-38-t0r" customClass="ViewController" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="ViewController" id="BYZ-38-t0r" customClass="ViewController" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="8bC-Xf-vdC">
                         <rect key="frame" x="0.0" y="0.0" width="414" height="736"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -111,16 +111,61 @@
             </objects>
             <point key="canvasLocation" x="955.07246376811599" y="20.380434782608699"/>
         </scene>
-        <!--View Controller-->
+        <!--Player DisplayVC View Controller-->
         <scene sceneID="b8E-Cr-Qkx">
             <objects>
-                <viewController id="TgU-5C-zxJ" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="PlayerDisplayVCViewController" id="TgU-5C-zxJ" customClass="PlayerDisplayVCViewController" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="2d5-1V-pE9">
                         <rect key="frame" x="0.0" y="0.0" width="414" height="736"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="RkC-Lv-W98" customClass="PlayerBC">
+                                <rect key="frame" x="0.0" y="0.0" width="414" height="736"/>
+                                <subviews>
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="WOM-Wb-FdX">
+                                        <rect key="frame" x="192" y="635" width="30" height="30"/>
+                                        <state key="normal" title="Play"/>
+                                        <connections>
+                                            <action selector="playPauseAction:" destination="TgU-5C-zxJ" eventType="touchUpInside" id="N57-J8-nhq"/>
+                                        </connections>
+                                    </button>
+                                    <slider opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" value="0.5" minValue="0.0" maxValue="1" translatesAutoresizingMaskIntoConstraints="NO" id="hSy-8j-zTG">
+                                        <rect key="frame" x="-2" y="605" width="418" height="31"/>
+                                    </slider>
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="5Ug-F3-w4d">
+                                        <rect key="frame" x="30" y="52" width="34" height="30"/>
+                                        <state key="normal" title="Back"/>
+                                        <connections>
+                                            <action selector="backButtonPressed:" destination="TgU-5C-zxJ" eventType="touchUpInside" id="V3r-PW-gKh"/>
+                                        </connections>
+                                    </button>
+                                </subviews>
+                                <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <constraints>
+                                    <constraint firstItem="5Ug-F3-w4d" firstAttribute="top" secondItem="RkC-Lv-W98" secondAttribute="top" constant="52" id="4S6-AW-bDj"/>
+                                    <constraint firstItem="WOM-Wb-FdX" firstAttribute="centerX" secondItem="RkC-Lv-W98" secondAttribute="centerX" id="IXq-zI-acg"/>
+                                    <constraint firstAttribute="bottom" secondItem="WOM-Wb-FdX" secondAttribute="bottom" constant="71" id="SDU-5T-JOC"/>
+                                    <constraint firstItem="WOM-Wb-FdX" firstAttribute="top" secondItem="hSy-8j-zTG" secondAttribute="bottom" id="VVW-Nx-vMX"/>
+                                    <constraint firstAttribute="trailing" secondItem="hSy-8j-zTG" secondAttribute="trailing" id="bzF-d6-3yw"/>
+                                    <constraint firstItem="5Ug-F3-w4d" firstAttribute="leading" secondItem="RkC-Lv-W98" secondAttribute="leading" constant="30" id="s3x-XR-Nhw"/>
+                                    <constraint firstItem="hSy-8j-zTG" firstAttribute="leading" secondItem="RkC-Lv-W98" secondAttribute="leading" id="svP-tr-NlR"/>
+                                </constraints>
+                            </view>
+                        </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                        <constraints>
+                            <constraint firstItem="RkC-Lv-W98" firstAttribute="top" secondItem="2d5-1V-pE9" secondAttribute="top" id="6RM-xH-N2D"/>
+                            <constraint firstItem="RkC-Lv-W98" firstAttribute="leading" secondItem="s8y-eq-gYG" secondAttribute="leading" id="HtG-Fv-Kjt"/>
+                            <constraint firstItem="RkC-Lv-W98" firstAttribute="bottom" secondItem="s8y-eq-gYG" secondAttribute="bottom" id="bfQ-fg-1iN"/>
+                            <constraint firstItem="RkC-Lv-W98" firstAttribute="trailing" secondItem="s8y-eq-gYG" secondAttribute="trailing" id="zXH-iy-d49"/>
+                        </constraints>
                         <viewLayoutGuide key="safeArea" id="s8y-eq-gYG"/>
                     </view>
+                    <connections>
+                        <outlet property="playPause" destination="WOM-Wb-FdX" id="uSF-Ey-OuW"/>
+                        <outlet property="playerView" destination="RkC-Lv-W98" id="heZ-27-go5"/>
+                        <outlet property="slider" destination="hSy-8j-zTG" id="bYi-bd-wY7"/>
+                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="1Ox-wG-A45" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>

@@ -19,7 +19,6 @@
     BOOL running;
     
 }
-
 -(void)updateTimer;
 - (UIImageOrientation)currentImageOrientation;
 @end
