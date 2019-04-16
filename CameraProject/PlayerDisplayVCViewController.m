@@ -13,7 +13,8 @@
     IBOutlet UIButton *playPause;
     IBOutlet UISlider *slider;
     AVPlayerItem *playerItem ;
-   
+    AVAsset *asset;
+    id observer;
 }
 
 @end
@@ -22,7 +23,8 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    playerItem = [AVPlayerItem playerItemWithURL:_videoURL];
+    asset = [AVAsset assetWithURL:_videoURL];
+    playerItem = [AVPlayerItem playerItemWithAsset:asset];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(itemDidFinishPlaying:) name:AVPlayerItemDidPlayToEndTimeNotification object:playerItem];
     player = [AVPlayer playerWithPlayerItem:playerItem];
     slider.maximumValue = CMTimeGetSeconds(playerItem.asset.duration);
@@ -48,38 +50,55 @@
 #pragma  mark -play/pause
 - (IBAction)playPauseAction:(id)sender {
     UIButton *btn = (UIButton*)sender;
-    if (player.rate) {
+    [self PlayerSetPlayPause:btn withPlayingStatus:player.rate];
+}
+
+- (void) PlayerSetPlayPause : (UIButton*)btn withPlayingStatus:(float)rate{
+    if (rate) {
         [player pause];
         [btn setTitle:@"Play" forState:UIControlStateNormal];
-       // [self.timer invalidate];
+        if (observer) {
+            [player removeTimeObserver:observer];
+            observer = nil;
+        }
+        
+        // [self.timer invalidate];
     }else{
-       
+        
         [btn setTitle:@"Pause" forState:UIControlStateNormal];
         
-        [player addPeriodicTimeObserverForInterval:CMTimeMakeWithSeconds(1/ 10000.0, NSEC_PER_SEC)
-                                             queue:NULL
-                                        usingBlock:^(CMTime time){
-                                            [self updateSlider];
-                                        }];
-         [player play];
-      //  self.timer = [NSTimer scheduledTimerWithTimeInterval:0.1 target:self selector:@selector(updateSlider) userInfo:nil repeats:YES];
+        observer = [player addPeriodicTimeObserverForInterval:CMTimeMakeWithSeconds(1/ 10000.0, NSEC_PER_SEC)
+                                                        queue:NULL
+                                                   usingBlock:^(CMTime time){
+                                                       [self updateSlider];
+                                                   }];
+        [player play];
+        //  self.timer = [NSTimer scheduledTimerWithTimeInterval:0.1 target:self selector:@selector(updateSlider) userInfo:nil repeats:YES];
     }
 }
+
 - (void)itemDidFinishPlaying:(NSNotification *)notification {
     [player seekToTime:kCMTimeZero];
     player.rate = 0 ;
     [playPause setTitle:@"Play" forState:UIControlStateNormal];
-    [self.timer invalidate];
     [slider setValue:0];
 }
 #pragma mark -slider
-- (IBAction)sliderValueChanged:(UISlider *)sender {
+
+- (IBAction)slidingBegin:(UISlider *)sender {
+    [self PlayerSetPlayPause:playPause withPlayingStatus:1];
+}
+- (IBAction)slideValueChange:(UISlider *)sender {
     [player seekToTime:CMTimeMakeWithSeconds(sender.value, NSEC_PER_SEC) toleranceBefore:kCMTimeZero toleranceAfter:kCMTimeZero];
 }
+- (IBAction)slidingDone:(UISlider *)sender {
+    [self PlayerSetPlayPause:playPause withPlayingStatus:0];
+}
+
 - (void)updateSlider {
     
     double time = CMTimeGetSeconds([player currentTime]);
-    // NSLog(@"min %f max %f time %f dur %f",minValue,maxValue,time,duration);
+//     NSLog(@"min %f max %f time %f dur %f",minValue,maxValue,time,duration);
     [slider setValue:time];
     
 }

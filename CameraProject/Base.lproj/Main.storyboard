@@ -131,6 +131,12 @@
                                     </button>
                                     <slider opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" value="0.5" minValue="0.0" maxValue="1" translatesAutoresizingMaskIntoConstraints="NO" id="hSy-8j-zTG">
                                         <rect key="frame" x="-2" y="605" width="418" height="31"/>
+                                        <connections>
+                                            <action selector="slideValueChange:" destination="TgU-5C-zxJ" eventType="valueChanged" id="m1w-Nn-CDs"/>
+                                            <action selector="slidingBegin:" destination="TgU-5C-zxJ" eventType="touchDown" id="AxC-Fp-NOt"/>
+                                            <action selector="slidingDone:" destination="TgU-5C-zxJ" eventType="touchUpOutside" id="b83-uH-G28"/>
+                                            <action selector="slidingDone:" destination="TgU-5C-zxJ" eventType="touchUpInside" id="z2x-0f-mJW"/>
+                                        </connections>
                                     </slider>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="5Ug-F3-w4d">
                                         <rect key="frame" x="30" y="52" width="34" height="30"/>
