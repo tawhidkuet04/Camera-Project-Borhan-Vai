@@ -14,6 +14,7 @@
     IBOutlet UISlider *slider;
     AVPlayerItem *playerItem ;
     AVAsset *asset;
+    AVAsset *audioAsset;
     id observer;
 }
 
@@ -24,12 +25,31 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     asset = [AVAsset assetWithURL:_videoURL];
-    playerItem = [AVPlayerItem playerItemWithAsset:asset];
+    NSURL *audioURL = [[NSBundle mainBundle] URLForResource:@"Toccata-and-Fugue-Dm.mp3" withExtension:nil];
+    audioAsset=[AVAsset assetWithURL:audioURL];
+    CMTime duration;
+    NSLog(@"%f",CMTimeGetSeconds(audioAsset.duration));
+//    if (CMTimeGetSeconds(audioAsset.duration) < CMTimeGetSeconds(asset.duration)) {
+//        duration = audioAsset.duration;
+//    } else
+    {
+        duration = asset.duration;
+    }
+    slider.maximumValue = CMTimeGetSeconds(duration);
+    slider.hidden =  NO;
+    NSError *error;
+    [slider setValue:0];
+    AVMutableComposition *mixAsset = [AVMutableComposition composition];
+   
+    AVMutableCompositionTrack *videoTrack = [ mixAsset addMutableTrackWithMediaType:AVMediaTypeVideo preferredTrackID:kCMPersistentTrackID_Invalid];
+    [videoTrack insertTimeRange:CMTimeRangeMake(kCMTimeZero, duration) ofTrack:[[asset tracksWithMediaType:AVMediaTypeVideo] lastObject] atTime:kCMTimeZero error: &error];
+    AVMutableCompositionTrack *audioTrack  = [mixAsset addMutableTrackWithMediaType:AVMediaTypeAudio preferredTrackID:kCMPersistentTrackID_Invalid];
+    [audioTrack insertTimeRange:CMTimeRangeMake(kCMTimeZero, duration) ofTrack:[[audioAsset tracksWithMediaType:AVMediaTypeAudio] lastObject] atTime:kCMTimeZero error:&error];
+
+    playerItem = [AVPlayerItem playerItemWithAsset:mixAsset];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(itemDidFinishPlaying:) name:AVPlayerItemDidPlayToEndTimeNotification object:playerItem];
     player = [AVPlayer playerWithPlayerItem:playerItem];
-    slider.maximumValue = CMTimeGetSeconds(playerItem.asset.duration);
-    slider.hidden =  NO;
-    [slider setValue:0];
+    
    // __weak NSObject *weakSelf = self;
    
 
@@ -38,14 +58,14 @@
 
 }
 - (void)viewWillAppear:(BOOL)animated{
-    playerItem = [AVPlayerItem playerItemWithURL:_videoURL];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(itemDidFinishPlaying:) name:AVPlayerItemDidPlayToEndTimeNotification object:playerItem];
-    player = [AVPlayer playerWithPlayerItem:playerItem];
-    slider.maximumValue = CMTimeGetSeconds(playerItem.asset.duration);
-    slider.hidden =  NO;
-    [slider setValue:0];
-    // _playerView.player = player;
-    [self.playerView setPlayer:player];
+//    playerItem = [AVPlayerItem playerItemWithURL:_videoURL];
+//    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(itemDidFinishPlaying:) name:AVPlayerItemDidPlayToEndTimeNotification object:playerItem];
+//    player = [AVPlayer playerWithPlayerItem:playerItem];
+//    slider.maximumValue = CMTimeGetSeconds(playerItem.asset.duration);
+//    slider.hidden =  NO;
+//    [slider setValue:0];
+//    // _playerView.player = player;
+//    [self.playerView setPlayer:player];
 }
 #pragma  mark -play/pause
 - (IBAction)playPauseAction:(id)sender {

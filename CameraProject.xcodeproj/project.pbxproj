@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		4E0ED14722660A7800462A44 /* Toccata-and-Fugue-Dm.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 4E0ED14622660A7700462A44 /* Toccata-and-Fugue-Dm.mp3 */; };
 		4E119083225E08980065313D /* imageShowViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 4E119080225E08980065313D /* imageShowViewController.xib */; };
 		4E119084225E08980065313D /* imageShowViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 4E119082225E08980065313D /* imageShowViewController.m */; };
 		4E944BC422648084001D1619 /* PlayerBC.m in Sources */ = {isa = PBXBuildFile; fileRef = 4E944BC322648084001D1619 /* PlayerBC.m */; };
@@ -39,6 +40,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		4E0ED14622660A7700462A44 /* Toccata-and-Fugue-Dm.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = "Toccata-and-Fugue-Dm.mp3"; sourceTree = "<group>"; };
 		4E119080225E08980065313D /* imageShowViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = imageShowViewController.xib; sourceTree = "<group>"; };
 		4E119081225E08980065313D /* imageShowViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = imageShowViewController.h; sourceTree = "<group>"; };
 		4E119082225E08980065313D /* imageShowViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = imageShowViewController.m; sourceTree = "<group>"; };
@@ -114,6 +116,7 @@
 			children = (
 				8B1F828E225CAAC70006FB64 /* AppDelegate.h */,
 				8B1F828F225CAAC70006FB64 /* AppDelegate.m */,
+				4E0ED14622660A7700462A44 /* Toccata-and-Fugue-Dm.mp3 */,
 				8B1F8291225CAAC70006FB64 /* ViewController.h */,
 				8B1F8292225CAAC70006FB64 /* ViewController.m */,
 				8B1F8294225CAAC70006FB64 /* Main.storyboard */,
@@ -253,6 +256,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				4E0ED14722660A7800462A44 /* Toccata-and-Fugue-Dm.mp3 in Resources */,
 				8B1F829B225CAAC90006FB64 /* LaunchScreen.storyboard in Resources */,
 				8B1F8298225CAAC90006FB64 /* Assets.xcassets in Resources */,
 				4E119083225E08980065313D /* imageShowViewController.xib in Resources */,
