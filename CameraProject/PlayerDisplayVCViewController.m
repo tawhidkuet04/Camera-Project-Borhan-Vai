@@ -27,6 +27,9 @@
     asset = [AVAsset assetWithURL:_videoURL];
     NSURL *audioURL = [[NSBundle mainBundle] URLForResource:@"Toccata-and-Fugue-Dm.mp3" withExtension:nil];
     audioAsset=[AVAsset assetWithURL:audioURL];
+    AVURLAsset *videoAssetURL = [[AVURLAsset alloc] initWithURL:_videoURL options:nil];
+    AVURLAsset *audioAssetURL = [ [ AVURLAsset alloc] initWithURL:audioURL options:nil];
+    
     CMTime duration;
     NSLog(@"%f",CMTimeGetSeconds(audioAsset.duration));
 //    if (CMTimeGetSeconds(audioAsset.duration) < CMTimeGetSeconds(asset.duration)) {
@@ -40,20 +43,31 @@
     NSError *error;
     [slider setValue:0];
     AVMutableComposition *mixAsset = [AVMutableComposition composition];
-   
-    AVMutableCompositionTrack *videoTrack = [ mixAsset addMutableTrackWithMediaType:AVMediaTypeVideo preferredTrackID:kCMPersistentTrackID_Invalid];
-    [videoTrack insertTimeRange:CMTimeRangeMake(kCMTimeZero, duration) ofTrack:[[asset tracksWithMediaType:AVMediaTypeVideo] lastObject] atTime:kCMTimeZero error: &error];
-    AVMutableCompositionTrack *audioTrack  = [mixAsset addMutableTrackWithMediaType:AVMediaTypeAudio preferredTrackID:kCMPersistentTrackID_Invalid];
-    [audioTrack insertTimeRange:CMTimeRangeMake(kCMTimeZero, duration) ofTrack:[[audioAsset tracksWithMediaType:AVMediaTypeAudio] lastObject] atTime:kCMTimeZero error:&error];
 
+    AVMutableCompositionTrack *compVideoTrack = [ mixAsset addMutableTrackWithMediaType:AVMediaTypeVideo preferredTrackID:kCMPersistentTrackID_Invalid];
+    
+    AVMutableCompositionTrack *compAudioTrack  = [mixAsset addMutableTrackWithMediaType:AVMediaTypeAudio preferredTrackID:kCMPersistentTrackID_Invalid];
+   
+    
+    AVAssetTrack *videoTrack = [[videoAssetURL tracksWithMediaType:AVMediaTypeVideo] firstObject];
+    AVAssetTrack *audioTrack = [[audioAssetURL tracksWithMediaType:AVMediaTypeAudio] firstObject];
+    [compVideoTrack insertTimeRange:CMTimeRangeMake(kCMTimeZero, videoAssetURL.duration) ofTrack:videoTrack atTime:kCMTimeZero error:&error];
+    if (videoTrack && compVideoTrack) {
+        [compVideoTrack setPreferredTransform:videoTrack.preferredTransform];
+    }
+    [compAudioTrack insertTimeRange:CMTimeRangeMake(kCMTimeZero, duration) ofTrack:audioTrack atTime:kCMTimeZero error:&error];
+    [compVideoTrack insertTimeRange:CMTimeRangeMake(kCMTimeZero, duration) ofTrack:videoTrack atTime:kCMTimeZero error: &error];
     playerItem = [AVPlayerItem playerItemWithAsset:mixAsset];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(itemDidFinishPlaying:) name:AVPlayerItemDidPlayToEndTimeNotification object:playerItem];
     player = [AVPlayer playerWithPlayerItem:playerItem];
-    
+   
+  //  player.frame = self.playerView.bounds;
    // __weak NSObject *weakSelf = self;
    
 
-   // _playerView.player = player;
+    // _playerView.player = player;
+    [self.playerView setOk:[UIScreen mainScreen].bounds];
+    [self.playerView setNeedsDisplay];
     [self.playerView setPlayer:player];
 
 }

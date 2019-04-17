@@ -7,7 +7,8 @@
 //
 
 #import "PlayerBC.h"
-
+#define degreeToRadian(x) (M_PI * x / 180.0)
+#define radianToDegree(x) (180.0 * x / M_PI)
 @implementation PlayerBC
 
 + (Class)layerClass {
@@ -25,8 +26,12 @@
 }
 
 - (void)setPlayer:(AVPlayer *)player {
-    ((AVPlayerLayer *)[self layer]).videoGravity = AVLayerVideoGravityResizeAspectFill;
+    ((AVPlayerLayer *)[self layer]).videoGravity = AVLayerVideoGravityResizeAspect;
+ //   [((AVPlayerLayer *)[self layer]) setAffineTransform:CGAffineTransformMakeRotation(degreeToRadian(90))];
     [(AVPlayerLayer *)[self layer] setPlayer:player];
 }
-
+- (void)setOk:(CGRect )framee {
+    //((AVPlayerLayer *)[self layer]).videoGravity = AVLayerVideoGravityResizeAspect;
+    [((AVPlayerLayer *)[self layer]) setFrame:framee];  //  [(AVPlayerLayer *)[self layer] setPlayer:player];
+}
 @end

@@ -11,9 +11,11 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface PlayerBC : UIView
+@interface PlayerBC : UIView{
+    
+}
 @property (nonatomic, strong) AVPlayer *player;
-
+- (void)setOk:(CGRect )framee ;
 @end
 
 NS_ASSUME_NONNULL_END
